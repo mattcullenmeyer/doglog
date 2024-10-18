@@ -5,6 +5,7 @@
 `tfenv install latest`  
 `tfenv use <version>`  
 
+`cd terraform/deploy`  
 `terraform init`  
 `terraform fmt`  
 `terraform validate`  

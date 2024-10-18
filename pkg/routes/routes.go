@@ -2,21 +2,31 @@ package routes
 
 import (
 	"net/http"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	eventController "github.com/mattcullenmeyer/zendog/pkg/controllers/event"
+	"github.com/mattcullenmeyer/zendog/pkg/controllers"
 )
 
 func RegisterRoutes() *gin.Engine {
 	router := gin.Default()
 
-	// middleware.CorsMiddleware(router)
+	config := cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders:     []string{"*"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}
+
+	router.Use(cors.New(config))
 
 	router.GET("/healthcheck", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "success"})
 	})
 
-	router.POST("/event/rep", eventController.AddRep)
+	router.POST("/event/rep", controllers.AddRep)
 
 	return router
 }

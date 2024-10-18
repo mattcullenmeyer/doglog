@@ -88,16 +88,12 @@ resource "aws_lambda_function" "main" {
 
   architectures = ["arm64"]
 
-  # environment {
-  #   variables = {
-  #     DYNAMODB_TABLE_NAME = var.dynamodb_table_name
-  #     ENVIRONMENT         = var.environment
-  #     COOKIE_DOMAIN       = var.cookie_domain
-  #     CONSOLE_HOST        = var.console_host
-  #     GATEWAY_HOST        = var.gateway_host
-  #     PIPELINE_HOST       = var.pipeline_host
-  #   }
-  # }
+  environment {
+    variables = {
+      FRONTEND_DOMAIN     = var.frontend_domain
+      DYNAMODB_TABLE_NAME = var.default_name
+    }
+  }
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_rest_api
@@ -205,3 +201,28 @@ resource "aws_route53_record" "api_gateway" {
     zone_id                = aws_api_gateway_domain_name.main.regional_zone_id
   }
 }
+
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table
+resource "aws_dynamodb_table" "main" {
+  name         = var.default_name
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "PK"
+  range_key    = "SK"
+
+  attribute {
+    name = "PK"
+    type = "S"
+  }
+
+  attribute {
+    name = "SK"
+    type = "S"
+  }
+
+  ttl {
+    attribute_name = "TTL"
+    enabled        = true
+  }
+}
+
