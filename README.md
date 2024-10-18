@@ -2,21 +2,23 @@
 
 ## Local Development
 
-Run locally  
+Run docker compose  
+`docker compose up --build`  
+
+## Local Development (without Docker Compose)
+
+Run locally without Docker at all  
 `go run ./cmd/local/main.go`  
 
 Build Dockerfile image  
 `docker build -t zendog-image .`  
 
-Run docker conainter  
+Run docker conainter from image  
 `docker run -p 8888:8888 --name zendog-container zendog-image`  
-
-Run docker compose  
-`docker compose build && docker compose --env-file .env up`  
 
 ## Local DynamoDB Access
 
-You will need to set AWS credentials to make requests to your local DynamoDB instance, but they can be made up values.
+You will need to set AWS credentials to make requests to your local DynamoDB instance, but they can be mock values.
 
 ```bash
 export AWS_REGION=us-east-2  
@@ -24,13 +26,15 @@ export AWS_ACCESS_KEY_ID=xx
 export AWS_SECRET_ACCESS_KEY=xx  
 ```
 
+Ensure they are set correctly
+
 ```bash
 echo $AWS_REGION  
 echo $AWS_ACCESS_KEY_ID  
 echo $AWS_SECRET_ACCESS_KEY  
 ```
 
-[Create DynamoDB Table](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/getting-started-step-1.html)
+See the [AWS CLI DynamoDB Documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/getting-started-step-1.html) for further details.
 
 ```bash
 aws dynamodb list-tables \
@@ -54,7 +58,7 @@ aws dynamodb create-table \
 
 ```bash
 aws dynamodb delete-table \
-  --table-name ZenDog \
+  --table-name zendog \
   --endpoint-url http://localhost:8000
 ```
 
@@ -62,14 +66,14 @@ aws dynamodb delete-table \
 aws dynamodb put-item \
   --table-name zendog \
   --endpoint-url http://localhost:8000 \
-  --item '{"PK": {"S": "m"}, "SK": {"S": "cm"}, "test": {"S": "test"}}'
+  --item '{"PK": {"S": "EVENT#1"}, "SK": {"S": "REP#1"}, "test": {"S": "test"}}'
 ```
 
 ```bash
 aws dynamodb get-item \
   --table-name zendog \
   --endpoint-url http://localhost:8000 \
-  --key '{ "PK": {"S": "m"}, "SK": {"S": "cm"}}'
+  --key '{ "PK": {"S": "EVENT#1"}, "SK": {"S": "REP#1"}}'
 ```
 
 ```bash
