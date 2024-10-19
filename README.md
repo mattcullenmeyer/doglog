@@ -41,6 +41,8 @@ aws dynamodb list-tables \
   --endpoint-url http://localhost:8000
 ```
 
+When creating a DynamoDB table, it must be named the same as what the Go service expects (as defined in docker-compose environment variables)
+
 ```bash
 aws dynamodb create-table \
   --table-name zendog \

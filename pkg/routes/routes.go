@@ -26,7 +26,9 @@ func RegisterRoutes() *gin.Engine {
 		c.JSON(http.StatusOK, gin.H{"message": "success"})
 	})
 
-	router.POST("/event/rep", controllers.AddRep)
+	router.POST("/event/rep", controllers.AddRepEvent)
+	// router.POST("/event/misc", controllers.AddMiscEvent)
+	router.GET("/events/day", controllers.GetDaysEvents)
 
 	return router
 }
