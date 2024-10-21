@@ -1,3 +1,4 @@
+import React from 'react';
 import { HelpText } from '@twilio-paste/core/help-text';
 import { Box } from '@twilio-paste/core/box';
 import { Button } from '@twilio-paste/core/button';
@@ -12,6 +13,8 @@ import { Heading } from '@twilio-paste/core/heading';
 import { Layout } from '../components/layout';
 import { useGetDaysEventsQuery } from '../store/api';
 import { Event } from '../store/types';
+import { Goal } from '../components/goal';
+import { Page } from '.';
 
 const EventRow = ({ event }: { event: Event }) => (
   <Box
@@ -47,7 +50,11 @@ const EventRow = ({ event }: { event: Event }) => (
   </Box>
 );
 
-export const Home = () => {
+interface HomeProps {
+  onChangePage: (page: Page) => void;
+}
+
+export const Home: React.FC<HomeProps> = ({ onChangePage }) => {
   const {
     data: eventsData,
     // error,
@@ -61,29 +68,9 @@ export const Home = () => {
   }
 
   return (
-    <Layout title="Home">
+    <Layout title="Home" onChangePage={onChangePage}>
       <Box display="flex" flexDirection="column" rowGap="space70" flexGrow={1}>
-        <Box display="flex" justifyContent="space-between">
-          <Box display="flex" alignItems="flex-end" columnGap="space20">
-            <Text
-              as="p"
-              fontSize="fontSize110"
-              letterSpacing="-3px"
-              lineHeight="lineHeight80"
-            >
-              00:30
-            </Text>
-            <Text as="p" fontWeight="fontWeightSemibold">
-              Goal
-            </Text>
-          </Box>
-
-          <Box display="flex" alignItems="flex-end">
-            <Button variant="secondary" size="small">
-              Edit goal
-            </Button>
-          </Box>
-        </Box>
+        <Goal />
 
         <Alert variant="neutral">
           <strong>2 hours since last rep</strong>
@@ -150,12 +137,17 @@ export const Home = () => {
 
       <Box display="flex" justifyContent="space-between" columnGap="space50">
         <Button variant="primary" fullWidth>
+          <PlusIcon decorative onClick={() => onChangePage('add-misc')} />
+          Add event
+        </Button>
+
+        <Button
+          variant="primary"
+          fullWidth
+          onClick={() => onChangePage('add-rep')}
+        >
           <PlusIcon decorative />
           Add rep
-        </Button>
-        <Button variant="primary" fullWidth>
-          <PlusIcon decorative />
-          Add event
         </Button>
       </Box>
     </Layout>
