@@ -19,7 +19,7 @@ type AddRepEventPayload struct {
 	End      string   `json:"end" binding:"required"`
 	Duration string   `json:"duration" binding:"required"`
 	Goal     string   `json:"goal" binding:"required"`
-	Success  bool     `json:"success" binding:"required"`
+	Success  *bool    `json:"success" binding:"required"`
 	Comment  string   `json:"comment" binding:"required"`
 	Behavior []string `json:"behavior" binding:"required"`
 }
@@ -39,7 +39,7 @@ func AddRepEvent(c *gin.Context) {
 		End:      payload.End,
 		Duration: payload.Duration,
 		Goal:     payload.Goal,
-		Success:  payload.Success,
+		Success:  *payload.Success,
 		Comment:  payload.Comment,
 		Behavior: payload.Behavior,
 	}
