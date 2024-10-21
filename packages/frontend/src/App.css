@@ -1,0 +1,63 @@
+/* https://www.joshwcomeau.com/css/custom-css-reset/ */
+/* https://piccalil.li/blog/a-more-modern-css-reset/ */
+/* https://github.com/joshuaclayton/blueprint-css/blob/master/blueprint/src/reset.css */
+
+/* Use a more-intuitive box-sizing model. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin */
+* {
+  margin: 0;
+}
+
+body {
+  /* Add accessible line-height */
+  line-height: 1.5;
+  /* Combobox dropdown will flash scrollbar for a split second even with height at 100vh if body doesn't hide overflow */
+  overflow: hidden;
+}
+
+/* Improve media defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Remove built-in form typography styles */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+textarea,
+input {
+  outline: none;
+  border: none;
+}
+
+*:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}

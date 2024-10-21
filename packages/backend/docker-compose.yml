@@ -22,7 +22,7 @@ services:
     depends_on:
       - "zendog-dynamodb"
     environment:
-      FRONTEND_DOMAIN: "http://127.0.0.1:3000"
+      FRONTEND_DOMAIN: "http://127.0.0.1:3006"
       DYNAMODB_ENDPOINT: "http://zendog-dynamodb:8000"
       DYNAMODB_TABLE_NAME: "zendog"
       AWS_ACCESS_KEY_ID: "xx"
