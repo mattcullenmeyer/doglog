@@ -15,6 +15,7 @@ import { useGetDaysEventsQuery } from '../store/api';
 import { Event } from '../store/types';
 import { Goal } from '../components/goal';
 import { Page } from '.';
+import { getTime } from '../utils/get-time';
 
 const EventRow = ({ event }: { event: Event }) => (
   <Box
@@ -30,7 +31,7 @@ const EventRow = ({ event }: { event: Event }) => (
       {event.type === 'rep' ? 'Training rep' : 'Misc'}
     </Text>
     <Text as="p" fontSize="fontSize30">
-      {event.duration}
+      {getTime(event.duration)}
     </Text>
     {event.success ? (
       <SuccessIcon
@@ -51,17 +52,22 @@ const EventRow = ({ event }: { event: Event }) => (
 );
 
 interface HomeProps {
+  goal: number;
+  onUpdateGoal: (goal: number) => void;
   onChangePage: (page: Page) => void;
 }
 
-export const Home: React.FC<HomeProps> = ({ onChangePage }) => {
+export const Home: React.FC<HomeProps> = ({ goal, onChangePage }) => {
   const {
     data: eventsData,
     // error,
     // isLoading
-  } = useGetDaysEventsQuery({
-    day: '10/18/2024',
-  });
+  } = useGetDaysEventsQuery(
+    {
+      day: new Date().toLocaleString().split(',')[0],
+    },
+    { refetchOnMountOrArgChange: true }
+  );
 
   if (!eventsData || !eventsData.events) {
     return null;
@@ -70,7 +76,7 @@ export const Home: React.FC<HomeProps> = ({ onChangePage }) => {
   return (
     <Layout title="Home" onChangePage={onChangePage}>
       <Box display="flex" flexDirection="column" rowGap="space70" flexGrow={1}>
-        <Goal />
+        <Goal goal={goal} />
 
         <Alert variant="neutral">
           <strong>2 hours since last rep</strong>

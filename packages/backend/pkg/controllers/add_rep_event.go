@@ -13,12 +13,12 @@ import (
 // date.toLocaleString()
 
 type AddRepEventPayload struct {
-	StartUtc string   `json:"start_utc" binding:"required"`
+	StartUtc int      `json:"start_utc" binding:"required"`
 	Day      string   `json:"day" binding:"required"`
 	Start    string   `json:"start" binding:"required"`
 	End      string   `json:"end" binding:"required"`
-	Duration string   `json:"duration" binding:"required"`
-	Goal     string   `json:"goal" binding:"required"`
+	Duration int      `json:"duration" binding:"required"`
+	Goal     int      `json:"goal" binding:"required"`
 	Success  *bool    `json:"success" binding:"required"`
 	Comment  string   `json:"comment" binding:"required"`
 	Behavior []string `json:"behavior" binding:"required"`

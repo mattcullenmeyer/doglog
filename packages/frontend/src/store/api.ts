@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { GetDaysEventsInput, GetDaysEventsResponse } from './types';
+import {
+  AddRepEventInput,
+  AddRepEventResponse,
+  GetDaysEventsInput,
+  GetDaysEventsResponse,
+} from './types';
 
 const API_URL = import.meta.env.VITE_APP_BACKEND_URL;
 
@@ -15,7 +20,16 @@ export const api = createApi({
         };
       },
     }),
+    addRepEvent: builder.mutation<AddRepEventResponse, AddRepEventInput>({
+      query: (arg) => {
+        return {
+          url: 'event/rep',
+          method: 'POST',
+          body: arg,
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetDaysEventsQuery } = api;
+export const { useGetDaysEventsQuery, useAddRepEventMutation } = api;

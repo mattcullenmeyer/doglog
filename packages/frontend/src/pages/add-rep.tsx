@@ -17,20 +17,25 @@ import {
   useFormPillState,
 } from '@twilio-paste/core/form-pill-group';
 import { TextArea } from '@twilio-paste/core/textarea';
+import { useAddRepEventMutation } from '../store/api';
 
 interface AddRepProps {
+  goal: number;
   onChangePage: (page: Page) => void;
 }
 
 const behaviors = ['Settled quickly', 'Stood by door', 'Barked a lot'];
 
-export const AddRep: React.FC<AddRepProps> = ({ onChangePage }) => {
+export const AddRep: React.FC<AddRepProps> = ({ goal, onChangePage }) => {
   const pillState = useFormPillState();
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [selectedBehaviors, setSelectedBehaviors] = useState<Set<string>>(
     new Set([])
   );
+  const [comment, setComment] = useState('');
+  const [start, setStart] = useState<Date>();
+  const [end, setEnd] = useState<Date>();
 
   useEffect(() => {
     if (!isTimerRunning) return;
@@ -41,6 +46,34 @@ export const AddRep: React.FC<AddRepProps> = ({ onChangePage }) => {
     return () => clearInterval(intervalId);
   }, [isTimerRunning]);
 
+  const [addRepEvent] = useAddRepEventMutation();
+
+  const onAddRepEvent = async () => {
+    const date = new Date();
+
+    if (!start || !end) {
+      console.error('Start and end times are required');
+      return;
+    }
+
+    try {
+      await addRepEvent({
+        start_utc: start.getTime(),
+        day: date.toLocaleString().split(',')[0],
+        start: start.toISOString(),
+        end: end.toISOString(),
+        duration: seconds,
+        goal,
+        success: seconds >= goal,
+        comment,
+        behavior: Array.from(selectedBehaviors),
+      });
+      onChangePage('home');
+    } catch (error) {
+      console.error('Failed to add rep event', error);
+    }
+  };
+
   return (
     <Layout
       title="Training rep"
@@ -48,7 +81,7 @@ export const AddRep: React.FC<AddRepProps> = ({ onChangePage }) => {
       onClickBack={() => onChangePage('home')}
     >
       <Box display="flex" flexDirection="column" rowGap="space70" flexGrow={1}>
-        <Goal />
+        <Goal goal={goal} />
 
         <Card padding="space40">
           <Box
@@ -88,50 +121,74 @@ export const AddRep: React.FC<AddRepProps> = ({ onChangePage }) => {
             Comments
           </Heading>
 
-          <TextArea />
+          <TextArea
+            value={comment}
+            onChange={(e) => setComment(e.currentTarget.value)}
+          />
         </Card>
       </Box>
 
-      <Card padding="space50">
-        <Box
-          display="grid"
-          gridTemplateColumns="1fr 1fr 1fr"
-          alignItems="center"
-        >
-          <Box>
-            {!isTimerRunning && seconds > 0 && (
+      <Box display="flex" flexDirection="column" rowGap="space70">
+        <Button variant="primary" onClick={onAddRepEvent}>
+          Save
+        </Button>
+
+        <Card padding="space50">
+          <Box
+            display="grid"
+            gridTemplateColumns="1fr 1fr 1fr"
+            alignItems="center"
+          >
+            <Box>
+              {!isTimerRunning && seconds > 0 && (
+                <Button
+                  variant="secondary"
+                  size="circle"
+                  onClick={() => {
+                    setSeconds(0);
+                    setStart(undefined);
+                    setEnd(undefined);
+                  }}
+                >
+                  <ResetIcon decorative size="sizeIcon50" />
+                </Button>
+              )}
+            </Box>
+
+            <Box display="flex" justifyContent="center">
+              <Text
+                as="p"
+                fontSize="fontSize80"
+                fontWeight="fontWeightSemibold"
+              >
+                {getTime(seconds)}
+              </Text>
+            </Box>
+
+            <Box display="flex" justifyContent="flex-end">
               <Button
                 variant="secondary"
                 size="circle"
-                onClick={() => setSeconds(0)}
+                pressed={!isTimerRunning}
+                onClick={() => {
+                  if (!isTimerRunning) {
+                    setStart(new Date());
+                  } else {
+                    setEnd(new Date());
+                  }
+                  setIsTimerRunning(!isTimerRunning);
+                }}
               >
-                <ResetIcon decorative size="sizeIcon50" />
+                {isTimerRunning ? (
+                  <PauseIcon decorative size="sizeIcon50" />
+                ) : (
+                  <PlayIcon decorative size="sizeIcon50" />
+                )}
               </Button>
-            )}
+            </Box>
           </Box>
-
-          <Box display="flex" justifyContent="center">
-            <Text as="p" fontSize="fontSize80" fontWeight="fontWeightSemibold">
-              {getTime(seconds)}
-            </Text>
-          </Box>
-
-          <Box display="flex" justifyContent="flex-end">
-            <Button
-              variant="secondary"
-              size="circle"
-              pressed={!isTimerRunning}
-              onClick={() => setIsTimerRunning(!isTimerRunning)}
-            >
-              {isTimerRunning ? (
-                <PauseIcon decorative size="sizeIcon50" />
-              ) : (
-                <PlayIcon decorative size="sizeIcon50" />
-              )}
-            </Button>
-          </Box>
-        </Box>
-      </Card>
+        </Card>
+      </Box>
     </Layout>
   );
 };

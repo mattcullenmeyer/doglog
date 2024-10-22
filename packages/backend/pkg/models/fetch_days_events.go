@@ -19,8 +19,8 @@ type Event struct {
 	Type     string   `json:"type" dynamodbav:"type"`
 	Start    string   `json:"start" dynamodbav:"start"`
 	End      string   `json:"end" dynamodbav:"end"`
-	Duration string   `json:"duration" dynamodbav:"duration"`
-	Goal     string   `json:"goal" dynamodbav:"goal"`
+	Duration int      `json:"duration" dynamodbav:"duration"`
+	Goal     int      `json:"goal" dynamodbav:"goal"`
 	Success  bool     `json:"success" dynamodbav:"success"`
 	Comment  string   `json:"comment" dynamodbav:"comment"`
 	Behavior []string `json:"behavior" dynamodbav:"behavior"`

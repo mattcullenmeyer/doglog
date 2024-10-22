@@ -11,12 +11,12 @@ import (
 )
 
 type CreateRepEventParams struct {
-	StartUtc string
+	StartUtc int
 	Day      string
 	Start    string
 	End      string
-	Duration string
-	Goal     string
+	Duration int
+	Goal     int
 	Success  bool
 	Comment  string
 	Behavior []string
@@ -29,8 +29,8 @@ type CreateRepEventAttributes struct {
 	Day      string   `dynamodbav:"day"`
 	Start    string   `dynamodbav:"start"`
 	End      string   `dynamodbav:"end"`
-	Duration string   `dynamodbav:"duration"`
-	Goal     string   `dynamodbav:"goal"`
+	Duration int      `dynamodbav:"duration"`
+	Goal     int      `dynamodbav:"goal"`
 	Success  bool     `dynamodbav:"success"`
 	Comment  string   `dynamodbav:"comment"`
 	Behavior []string `dynamodbav:"behavior"`
@@ -41,7 +41,7 @@ func CreateRepEvent(args CreateRepEventParams) error {
 	tableName := os.Getenv("DYNAMODB_TABLE_NAME")
 
 	PK := fmt.Sprintf("EVENT#%s", args.Day)
-	SK := fmt.Sprintf("EVENT#%s", args.StartUtc)
+	SK := fmt.Sprintf("EVENT#%d", args.StartUtc)
 
 	attributes := CreateRepEventAttributes{
 		PK:       PK,
