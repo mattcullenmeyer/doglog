@@ -4,13 +4,15 @@ export interface GetDaysEventsInput {
 
 export type Event = {
   type: 'rep' | 'misc';
+  day: string;
   start: string;
-  end: string;
+  start_utc: number;
   duration: number;
   goal: number;
   success: boolean;
   comment: string;
   behavior: string[];
+  user: string;
 };
 
 export interface GetDaysEventsResponse {
@@ -21,12 +23,12 @@ export interface AddRepEventInput {
   start_utc: number;
   day: string;
   start: string;
-  end: string;
   duration: number;
   goal: number;
   success: boolean;
   comment: string;
   behavior: string[];
+  user: string;
 }
 
 export interface AddRepEventResponse {

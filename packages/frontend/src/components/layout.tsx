@@ -8,6 +8,13 @@ import { Text } from '@twilio-paste/core/text';
 import React from 'react';
 import { Page } from '../pages';
 import { ArrowBackIcon } from '@twilio-paste/icons/esm/ArrowBackIcon';
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  useMenuState,
+} from '@twilio-paste/core/menu';
+import { Avatar } from '@twilio-paste/core/avatar';
 
 interface LayoutProps {
   title: string;
@@ -22,6 +29,8 @@ export const Layout: React.FC<LayoutProps> = ({
   onClickBack,
   children,
 }) => {
+  const profileMenu = useMenuState();
+
   return (
     <Box display="flex" flexDirection="column" height="100dvh">
       <Box
@@ -107,12 +116,32 @@ export const Layout: React.FC<LayoutProps> = ({
           </Box>
         </Button>
 
-        <Button size="reset" variant="reset">
+        <MenuButton size="reset" variant="reset" {...profileMenu}>
           <Box display="flex" flexDirection="column" alignItems="center">
             <UserIcon decorative size="sizeIcon70" />
             <HelpText marginTop="space0">Profile</HelpText>
           </Box>
-        </Button>
+        </MenuButton>
+        <Menu {...profileMenu} aria-label="Profile">
+          <MenuItem
+            {...profileMenu}
+            onClick={() => localStorage.setItem('user', 'A')}
+          >
+            <Box display="flex" columnGap="space30">
+              <Avatar size="sizeIcon30" color="decorative20" name="A" />
+              Esposa
+            </Box>
+          </MenuItem>
+          <MenuItem
+            {...profileMenu}
+            onClick={() => localStorage.setItem('user', 'O')}
+          >
+            <Box display="flex" columnGap="space30">
+              <Avatar size="sizeIcon30" color="decorative40" name="O" />
+              Esposo
+            </Box>
+          </MenuItem>
+        </Menu>
       </Box>
     </Box>
   );

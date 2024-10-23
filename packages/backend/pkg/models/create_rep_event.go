@@ -14,12 +14,12 @@ type CreateRepEventParams struct {
 	StartUtc int
 	Day      string
 	Start    string
-	End      string
 	Duration int
 	Goal     int
 	Success  bool
 	Comment  string
 	Behavior []string
+	User     string
 }
 
 type CreateRepEventAttributes struct {
@@ -28,12 +28,13 @@ type CreateRepEventAttributes struct {
 	Type     string   `dynamodbav:"type"`
 	Day      string   `dynamodbav:"day"`
 	Start    string   `dynamodbav:"start"`
-	End      string   `dynamodbav:"end"`
+	StartUtc int      `dynamodbav:"start_utc"`
 	Duration int      `dynamodbav:"duration"`
 	Goal     int      `dynamodbav:"goal"`
 	Success  bool     `dynamodbav:"success"`
 	Comment  string   `dynamodbav:"comment"`
 	Behavior []string `dynamodbav:"behavior"`
+	User     string   `dynamodbav:"user"`
 }
 
 func CreateRepEvent(args CreateRepEventParams) error {
@@ -49,12 +50,13 @@ func CreateRepEvent(args CreateRepEventParams) error {
 		Type:     "rep",
 		Day:      args.Day,
 		Start:    args.Start,
-		End:      args.End,
+		StartUtc: args.StartUtc,
 		Duration: args.Duration,
 		Goal:     args.Goal,
 		Success:  args.Success,
 		Comment:  args.Comment,
 		Behavior: args.Behavior,
+		User:     args.User,
 	}
 
 	values, err := dynamodbattribute.MarshalMap(attributes)
@@ -62,6 +64,7 @@ func CreateRepEvent(args CreateRepEventParams) error {
 		return err
 	}
 
+	// technically should be transaction where I check if SK already exists
 	input := &dynamodb.PutItemInput{
 		TableName: aws.String(tableName),
 		Item:      values,

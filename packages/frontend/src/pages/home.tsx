@@ -26,9 +26,16 @@ const EventRow = ({ event }: { event: Event }) => (
     borderTopWidth="borderWidth10"
     borderTopStyle="solid"
   >
-    <Avatar size="sizeIcon30" name="Matt Cullen-Meyer" />
+    <Avatar
+      size="sizeIcon30"
+      name={event.user}
+      color={event.user === 'O' ? 'decorative40' : 'decorative20'}
+    />
     <Text as="p" fontSize="fontSize30">
       {event.type === 'rep' ? 'Training rep' : 'Misc'}
+    </Text>
+    <Text as="p" fontSize="fontSize30">
+      {event.start}
     </Text>
     <Text as="p" fontSize="fontSize30">
       {getTime(event.duration)}
@@ -90,7 +97,7 @@ export const Home: React.FC<HomeProps> = ({ goal, onChangePage }) => {
           >
             <Box paddingX="space40" paddingTop="space40">
               <Heading as="h3" variant="heading50">
-                Event log
+                Today's events
               </Heading>
               {eventsData.events.map((event) => (
                 <EventRow event={event} />

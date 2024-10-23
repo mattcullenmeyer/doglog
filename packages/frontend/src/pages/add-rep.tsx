@@ -35,7 +35,8 @@ export const AddRep: React.FC<AddRepProps> = ({ goal, onChangePage }) => {
   );
   const [comment, setComment] = useState('');
   const [start, setStart] = useState<Date>();
-  const [end, setEnd] = useState<Date>();
+
+  const isSaveDisabled = seconds === 0 || isTimerRunning;
 
   useEffect(() => {
     if (!isTimerRunning) return;
@@ -51,22 +52,25 @@ export const AddRep: React.FC<AddRepProps> = ({ goal, onChangePage }) => {
   const onAddRepEvent = async () => {
     const date = new Date();
 
-    if (!start || !end) {
-      console.error('Start and end times are required');
+    if (!start) {
+      console.error('Start time is required');
       return;
     }
 
     try {
       await addRepEvent({
         start_utc: start.getTime(),
-        day: date.toLocaleString().split(',')[0],
-        start: start.toISOString(),
-        end: end.toISOString(),
+        day: date.toLocaleString().split(',')[0], // eg 10/18/2024
+        start: start.toLocaleString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+        }), // eg 1:13 PM
         duration: seconds,
         goal,
         success: seconds >= goal,
         comment,
         behavior: Array.from(selectedBehaviors),
+        user: localStorage.getItem('user') || 'A',
       });
       onChangePage('home');
     } catch (error) {
@@ -129,10 +133,6 @@ export const AddRep: React.FC<AddRepProps> = ({ goal, onChangePage }) => {
       </Box>
 
       <Box display="flex" flexDirection="column" rowGap="space70">
-        <Button variant="primary" onClick={onAddRepEvent}>
-          Save
-        </Button>
-
         <Card padding="space50">
           <Box
             display="grid"
@@ -147,7 +147,6 @@ export const AddRep: React.FC<AddRepProps> = ({ goal, onChangePage }) => {
                   onClick={() => {
                     setSeconds(0);
                     setStart(undefined);
-                    setEnd(undefined);
                   }}
                 >
                   <ResetIcon decorative size="sizeIcon50" />
@@ -173,8 +172,6 @@ export const AddRep: React.FC<AddRepProps> = ({ goal, onChangePage }) => {
                 onClick={() => {
                   if (!isTimerRunning) {
                     setStart(new Date());
-                  } else {
-                    setEnd(new Date());
                   }
                   setIsTimerRunning(!isTimerRunning);
                 }}
@@ -188,6 +185,14 @@ export const AddRep: React.FC<AddRepProps> = ({ goal, onChangePage }) => {
             </Box>
           </Box>
         </Card>
+
+        <Button
+          variant="primary"
+          onClick={onAddRepEvent}
+          disabled={isSaveDisabled}
+        >
+          Save
+        </Button>
       </Box>
     </Layout>
   );

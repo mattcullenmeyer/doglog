@@ -16,12 +16,12 @@ type AddRepEventPayload struct {
 	StartUtc int      `json:"start_utc" binding:"required"`
 	Day      string   `json:"day" binding:"required"`
 	Start    string   `json:"start" binding:"required"`
-	End      string   `json:"end" binding:"required"`
 	Duration int      `json:"duration" binding:"required"`
 	Goal     int      `json:"goal" binding:"required"`
 	Success  *bool    `json:"success" binding:"required"`
-	Comment  string   `json:"comment" binding:"required"`
+	Comment  *string  `json:"comment" binding:"required"`
 	Behavior []string `json:"behavior" binding:"required"`
+	User     string   `json:"user" binding:"required"`
 }
 
 func AddRepEvent(c *gin.Context) {
@@ -36,12 +36,12 @@ func AddRepEvent(c *gin.Context) {
 		StartUtc: payload.StartUtc,
 		Day:      payload.Day,
 		Start:    payload.Start,
-		End:      payload.End,
 		Duration: payload.Duration,
 		Goal:     payload.Goal,
 		Success:  *payload.Success,
-		Comment:  payload.Comment,
+		Comment:  *payload.Comment,
 		Behavior: payload.Behavior,
+		User:     payload.User,
 	}
 
 	if err := models.CreateRepEvent(createRepEventArgs); err != nil {

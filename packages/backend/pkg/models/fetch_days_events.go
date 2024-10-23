@@ -17,13 +17,15 @@ type FetchTodaysEventsParams struct {
 
 type Event struct {
 	Type     string   `json:"type" dynamodbav:"type"`
+	Day      string   `json:"day" dynamodbav:"day"`
 	Start    string   `json:"start" dynamodbav:"start"`
-	End      string   `json:"end" dynamodbav:"end"`
+	StartUtc int      `json:"start_utc" dynamodbav:"start_utc"`
 	Duration int      `json:"duration" dynamodbav:"duration"`
 	Goal     int      `json:"goal" dynamodbav:"goal"`
 	Success  bool     `json:"success" dynamodbav:"success"`
 	Comment  string   `json:"comment" dynamodbav:"comment"`
 	Behavior []string `json:"behavior" dynamodbav:"behavior"`
+	User     string   `json:"user" dynamodbav:"user"`
 }
 
 func FetchDaysEvents(args FetchTodaysEventsParams) ([]Event, error) {
