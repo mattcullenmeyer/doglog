@@ -125,7 +125,10 @@ export const Layout: React.FC<LayoutProps> = ({
         <Menu {...profileMenu} aria-label="Profile">
           <MenuItem
             {...profileMenu}
-            onClick={() => localStorage.setItem('user', 'A')}
+            onClick={() => {
+              localStorage.setItem('user', 'A');
+              profileMenu.hide();
+            }}
           >
             <Box display="flex" columnGap="space30">
               <Avatar size="sizeIcon30" color="decorative20" name="A" />
@@ -134,7 +137,10 @@ export const Layout: React.FC<LayoutProps> = ({
           </MenuItem>
           <MenuItem
             {...profileMenu}
-            onClick={() => localStorage.setItem('user', 'O')}
+            onClick={() => {
+              localStorage.setItem('user', 'O');
+              profileMenu.hide();
+            }}
           >
             <Box display="flex" columnGap="space30">
               <Avatar size="sizeIcon30" color="decorative40" name="O" />
