@@ -119,7 +119,7 @@ export const Home: React.FC<HomeProps> = ({ goal, onChangePage }) => {
                   fontSize="fontSize40"
                   fontWeight="fontWeightSemibold"
                 >
-                  3
+                  {eventsData.stats.success_count}
                 </Text>
               </Box>
               <Box display="flex" flexDirection="column" alignItems="center">
@@ -129,7 +129,7 @@ export const Home: React.FC<HomeProps> = ({ goal, onChangePage }) => {
                   fontSize="fontSize40"
                   fontWeight="fontWeightSemibold"
                 >
-                  3
+                  {eventsData.stats.rep_count}
                 </Text>
               </Box>
 
@@ -140,7 +140,7 @@ export const Home: React.FC<HomeProps> = ({ goal, onChangePage }) => {
                   fontSize="fontSize40"
                   fontWeight="fontWeightSemibold"
                 >
-                  00:30
+                  {getTime(eventsData.stats.average_duration)}
                 </Text>
               </Box>
             </Box>

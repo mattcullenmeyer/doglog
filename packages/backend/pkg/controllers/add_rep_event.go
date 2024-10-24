@@ -49,5 +49,51 @@ func AddRepEvent(c *gin.Context) {
 		return
 	}
 
+	fetchDaysEventsArgs := models.FetchTodaysEventsParams{
+		Day: payload.Day,
+	}
+
+	response, err := models.FetchDaysEvents(fetchDaysEventsArgs)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	repCount := 0
+	successCount := 0
+	durationSum := 0
+	for _, event := range response {
+		// find all events of type "rep"
+		if event.Type == "rep" {
+			// increment rep count
+			repCount++
+
+			// add duration to sum
+			durationSum += event.Duration
+
+			// determine if event was successful
+			if event.Success {
+				successCount++
+			}
+		}
+	}
+
+	// calculate average duration
+	averageDuration := int(float64(durationSum) / float64(repCount))
+
+	updateDaysStatsArgs := models.UpdateDaysStatsParams{
+		Day:             payload.Day,
+		RepCount:        repCount,
+		SuccessCount:    successCount,
+		AverageDuration: averageDuration,
+	}
+
+	// fmt.Printf("updateDaysStatsArgs: %+v\n", updateDaysStatsArgs)
+
+	if err := models.UpdateDaysStats(updateDaysStatsArgs); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusCreated, gin.H{"message": "success"})
 }

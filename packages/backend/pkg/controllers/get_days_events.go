@@ -14,11 +14,17 @@ func GetDaysEvents(c *gin.Context) {
 		Day: day,
 	}
 
-	response, err := models.FetchDaysEvents(fetchDaysEventsArgs)
+	events, err := models.FetchDaysEvents(fetchDaysEventsArgs)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"events": response})
+	stats, err := models.FetchDaysStats(models.FetchDaysStatsParams{Day: day})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"events": events, "stats": stats})
 }

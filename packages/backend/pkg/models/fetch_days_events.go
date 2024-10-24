@@ -36,8 +36,12 @@ func FetchDaysEvents(args FetchTodaysEventsParams) ([]Event, error) {
 
 	pk := fmt.Sprintf("EVENT#%s", args.Day)
 	pkCondition := expression.Key("PK").Equal(expression.Value(pk))
+	skCondition := expression.Key("SK").BeginsWith("EVENT#")
+	keyCondition := pkCondition.And(skCondition)
 
-	expr, err := expression.NewBuilder().WithKeyCondition(pkCondition).Build()
+	expr, err := expression.NewBuilder().
+		WithKeyCondition(keyCondition).
+		Build()
 	if err != nil {
 		return events, err
 	}

@@ -35,6 +35,7 @@ export const AddRep: React.FC<AddRepProps> = ({ goal, onChangePage }) => {
   );
   const [comment, setComment] = useState('');
   const [start, setStart] = useState<Date>();
+  const [isAddRepEventLoading, setIsAddRepEventLoading] = useState(false);
 
   const isSaveDisabled = seconds === 0 || isTimerRunning;
 
@@ -50,6 +51,7 @@ export const AddRep: React.FC<AddRepProps> = ({ goal, onChangePage }) => {
   const [addRepEvent] = useAddRepEventMutation();
 
   const onAddRepEvent = async () => {
+    setIsAddRepEventLoading(true);
     const date = new Date();
 
     if (!start) {
@@ -75,6 +77,8 @@ export const AddRep: React.FC<AddRepProps> = ({ goal, onChangePage }) => {
       onChangePage('home');
     } catch (error) {
       console.error('Failed to add rep event', error);
+    } finally {
+      setIsAddRepEventLoading(false);
     }
   };
 
@@ -190,6 +194,7 @@ export const AddRep: React.FC<AddRepProps> = ({ goal, onChangePage }) => {
           variant="primary"
           onClick={onAddRepEvent}
           disabled={isSaveDisabled}
+          loading={isAddRepEventLoading}
         >
           Save
         </Button>

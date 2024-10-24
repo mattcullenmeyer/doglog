@@ -15,8 +15,15 @@ export type Event = {
   user: string;
 };
 
+export type Stats = {
+  rep_count: number;
+  success_count: number;
+  average_duration: number;
+};
+
 export interface GetDaysEventsResponse {
   events: Event[];
+  stats: Stats;
 }
 
 export interface AddRepEventInput {
