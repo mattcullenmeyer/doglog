@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -11,32 +10,25 @@ import (
 	"github.com/mattcullenmeyer/zendog/pkg/utils"
 )
 
-type FetchDaysStatsParams struct {
-	Day string
+type LastRep struct {
+	EndUtc int `dynamodbav:"end_utc"`
 }
 
-type Stats struct {
-	RepCount        int `json:"rep_count" dynamodbav:"rep_count"`
-	SuccessCount    int `json:"success_count" dynamodbav:"success_count"`
-	AverageDuration int `json:"average_duration" dynamodbav:"average_duration"`
-}
-
-func FetchDaysStats(args FetchDaysStatsParams) (Stats, error) {
+func FetchLastRep() (LastRep, error) {
 	svc := utils.DynamodbClient()
 	tableName := os.Getenv("DYNAMODB_TABLE_NAME")
 
-	stats := Stats{}
+	lastRep := LastRep{}
 
-	pk := fmt.Sprintf("EVENT#%s", args.Day)
-	pkCondition := expression.Key("PK").Equal(expression.Value(pk))
-	skCondition := expression.Key("SK").BeginsWith("STATS#")
+	pkCondition := expression.Key("PK").Equal(expression.Value("LASTREP"))
+	skCondition := expression.Key("SK").Equal(expression.Value("LASTREP"))
 	keyCondition := pkCondition.And(skCondition)
 
 	expr, err := expression.NewBuilder().
 		WithKeyCondition(keyCondition).
 		Build()
 	if err != nil {
-		return stats, err
+		return lastRep, err
 	}
 
 	input := &dynamodb.QueryInput{
@@ -48,16 +40,16 @@ func FetchDaysStats(args FetchDaysStatsParams) (Stats, error) {
 
 	queryOutput, err := svc.Query(input)
 	if err != nil {
-		return stats, err
+		return lastRep, err
 	}
 
 	if len(queryOutput.Items) == 0 {
-		return stats, nil
+		return lastRep, nil
 	}
 
-	if err = dynamodbattribute.UnmarshalMap(queryOutput.Items[0], &stats); err != nil {
-		return stats, err
+	if err = dynamodbattribute.UnmarshalMap(queryOutput.Items[0], &lastRep); err != nil {
+		return lastRep, err
 	}
 
-	return stats, nil
+	return lastRep, nil
 }

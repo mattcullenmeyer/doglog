@@ -24,10 +24,12 @@ export type Stats = {
 export interface GetDaysEventsResponse {
   events: Event[];
   stats: Stats;
+  last_rep: number; // TODO: make last_rep an instance of Event
 }
 
 export interface AddRepEventInput {
   start_utc: number;
+  end_utc: number;
   day: string;
   start: string;
   duration: number;

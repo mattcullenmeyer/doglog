@@ -100,17 +100,12 @@ GOARCH must match architecture of lambda function
 GOARCH=arm64 GOOS=linux go build -tags lambda.norpc \
   -o ./bin/bootstrap ./cmd/lambda && \
   zip -j terraform/resources/bootstrap.zip bin/bootstrap
-```
-
-```bash
-export AWS_PROFILE=personal
 
 aws lambda update-function-code \
   --function-name zendog \
   --region us-east-2 \
-  --zip-file fileb://terraform/resources/bootstrap.zip
-
-unset AWS_PROFILE
+  --zip-file fileb://terraform/resources/bootstrap.zip \
+  --profile personal
 ```
 
 ## Helpful Go Commands
@@ -125,3 +120,7 @@ Install a dependency
 
 - The dynamodb endpoint includes the name specific to its container  
 - If you ever need to delete the docker directory, use `sudo rm -r docker`  
+
+## CloudWatch Logging
+
+CloudWatch >> Log groups >> switch to us-east-2 >> /aws/lambda/zendog

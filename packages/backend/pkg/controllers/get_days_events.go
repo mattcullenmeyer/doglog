@@ -26,5 +26,11 @@ func GetDaysEvents(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"events": events, "stats": stats})
+	lastRep, err := models.FetchLastRep()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"events": events, "stats": stats, "last_rep": lastRep.EndUtc})
 }

@@ -3,7 +3,7 @@ import { HelpText } from '@twilio-paste/core/help-text';
 import { Box } from '@twilio-paste/core/box';
 import { Button } from '@twilio-paste/core/button';
 import { SuccessIcon } from '@twilio-paste/icons/esm/SuccessIcon';
-import { ErrorIcon } from '@twilio-paste/icons/esm/ErrorIcon';
+import { WarningIcon } from '@twilio-paste/icons/esm/WarningIcon';
 import { PlusIcon } from '@twilio-paste/icons/esm/PlusIcon';
 import { Alert } from '@twilio-paste/core/alert';
 import { Card } from '@twilio-paste/core/card';
@@ -16,6 +16,29 @@ import { Event } from '../store/types';
 import { Goal } from '../components/goal';
 import { Page } from '.';
 import { getTime } from '../utils/get-time';
+
+const getTimeSinceLastRep = (lastRep: number) => {
+  if (lastRep === 0) {
+    return 'Get started by adding a rep';
+  }
+
+  const now = new Date().getTime();
+  const diff = now - lastRep;
+  const seconds = diff / 1000;
+  const minutes = seconds / 60;
+  const hours = minutes / 60;
+  const days = hours / 24;
+
+  if (days >= 1) {
+    return `${Math.floor(days)} days since last rep`;
+  }
+
+  if (hours >= 1) {
+    return `${Math.floor(hours)} hours since last rep`;
+  }
+
+  return `${Math.floor(minutes)} minutes since last rep`;
+};
 
 const EventRow = ({ event }: { event: Event }) => (
   <Box
@@ -48,11 +71,11 @@ const EventRow = ({ event }: { event: Event }) => (
         color="colorTextIconSuccess"
       />
     ) : (
-      <ErrorIcon
+      <WarningIcon
         decorative={false}
         title="Does not meet goal"
         size="sizeIcon30"
-        color="colorTextError"
+        color="colorTextIconWarning"
       />
     )}
   </Box>
@@ -86,7 +109,7 @@ export const Home: React.FC<HomeProps> = ({ goal, onChangePage }) => {
         <Goal goal={goal} />
 
         <Alert variant="neutral">
-          <strong>2 hours since last rep</strong>
+          <strong>{getTimeSinceLastRep(eventsData.last_rep)}</strong>
         </Alert>
 
         <Card padding="space0">

@@ -62,6 +62,7 @@ export const AddRep: React.FC<AddRepProps> = ({ goal, onChangePage }) => {
     try {
       await addRepEvent({
         start_utc: start.getTime(),
+        end_utc: start.getTime() + seconds * 1000,
         day: date.toLocaleString().split(',')[0], // eg 10/18/2024
         start: start.toLocaleString('en-US', {
           hour: 'numeric',
